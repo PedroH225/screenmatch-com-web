@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import br.com.alura.screenmatchweb.dto.EpisodioDTO;
 import br.com.alura.screenmatchweb.dto.SerieDTO;
 import br.com.alura.screenmatchweb.model.Serie;
 import br.com.alura.screenmatchweb.repository.SerieRepository;
@@ -43,6 +45,13 @@ public class SerieService {
 		return new SerieDTO(s.getId(), s.getTitulo(), s.getTotalTemporadas(), s.getAvaliacao(),
 				s.getGenero(), s.getAtores(), s.getPoster(), s.getSinopse());
 	}
+	
+	private List<EpisodioDTO> converterEpisodioDTO(Serie s) {
+		return s.getEpisodios().stream()
+				.map(ep -> new EpisodioDTO(ep.getId(), ep.getTitulo(), ep.getTemporada(), ep.getNumeroEpisodio()))
+				.collect(Collectors.toList());
+	}
+
 
 	public SerieDTO obterPorId(String id) {
 		Optional<Serie> buscarSerie = serieRepository.findById(id);
@@ -52,4 +61,16 @@ public class SerieService {
 		}
 		return null;
 	}
+
+	public List<EpisodioDTO> obterEpisodios(String id) {
+		Optional<Serie> buscarSerie = this.serieRepository.findById(id);
+		if (buscarSerie.isPresent()) {
+			return converterEpisodioDTO(buscarSerie.get());
+		}
+		return null;
+	}
 }
+
+
+
+
