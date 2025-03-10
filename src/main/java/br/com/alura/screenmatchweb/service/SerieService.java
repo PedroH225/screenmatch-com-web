@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.alura.screenmatchweb.dto.EpisodioDTO;
 import br.com.alura.screenmatchweb.dto.SerieDTO;
+import br.com.alura.screenmatchweb.model.Episodio;
 import br.com.alura.screenmatchweb.model.Serie;
 import br.com.alura.screenmatchweb.repository.SerieRepository;
 
@@ -51,6 +52,12 @@ public class SerieService {
 				.map(ep -> new EpisodioDTO(ep.getId(), ep.getTitulo(), ep.getTemporada(), ep.getNumeroEpisodio()))
 				.collect(Collectors.toList());
 	}
+	
+	private List<EpisodioDTO> converterEpisodioDTO(List<Episodio> eps) {
+		return eps.stream()
+				.map(ep -> new EpisodioDTO(ep.getId(), ep.getTitulo(), ep.getTemporada(), ep.getNumeroEpisodio()))
+				.collect(Collectors.toList());
+	}
 
 
 	public SerieDTO obterPorId(String id) {
@@ -66,6 +73,14 @@ public class SerieService {
 		Optional<Serie> buscarSerie = this.serieRepository.findById(id);
 		if (buscarSerie.isPresent()) {
 			return converterEpisodioDTO(buscarSerie.get());
+		}
+		return null;
+	}
+
+	public List<EpisodioDTO> obterEpisodiosTemporada(String id, Integer numTemp) {
+		List<Episodio> buscarEpisodios = this.serieRepository.buscarPorIdTemporada(id, numTemp);
+		if (!buscarEpisodios.isEmpty()) {
+			return converterEpisodioDTO(buscarEpisodios);
 		}
 		return null;
 	}

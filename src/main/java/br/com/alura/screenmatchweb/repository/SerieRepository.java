@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import br.com.alura.screenmatchweb.dto.EpisodioDTO;
 import br.com.alura.screenmatchweb.model.Categoria;
 import br.com.alura.screenmatchweb.model.Episodio;
 import br.com.alura.screenmatchweb.model.Serie;
@@ -42,6 +43,9 @@ public interface SerieRepository extends JpaRepository<Serie, String> {
             "GROUP BY s " +
             "ORDER BY MAX(e.dataLancamento) DESC LIMIT 5")
     List<Serie> encontrarEpisodiosMaisRecentes();
+
+	@Query("SELECT e FROM Serie s JOIN s.episodios e WHERE s.id = :id AND e.temporada = :numTemp")
+	List<Episodio> buscarPorIdTemporada(String id, Integer numTemp);
 }
 
 
